@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    
+    <script>
+        function emailDp(){
+
+            const email = document.getElementById("memberEmail").value;
+            const ECheck= document.getElementById("emailCheck");
+
+            $.ajax({
+               type: 'post',
+               url: 'emailDuplicate',
+               data: {'memberEmail':email},
+               dataType:'text',
+               success: function (result){
+                   if(result=='ok'){
+                       ECheck.style.color='green';
+                       ECheck.innerHTML='GOOD';
+                   }else{
+                       ECheck.style.color='red';
+                       ECheck.innerHTML='중복됐어요!';
+                   }
+               },
+                error: function (){
+                   alert('아작이 또 실패...');
+                }
+            });
+        }
+        
+    </script>
+</head>
+<body>
+<h2>save</h2>
+
+<form action="/member/save" method="post" enctype="multipart/form-data">
+    이메일: <input th:type="text" th:name="memberEmail" th:onblur="emailDp()" id="memberEmail" >
+    <span id="emailCheck"></span>
+    비밀번호:<input th:type="text" th:name="memberPassword" >
+    이름:<input th:type="text" th:name="memberName" >
+    전화번호:<input th:type="text" th:name="memberPhone" >
+    <input type="file" name="memberFile">
+    <input th:type="submit" th:value="가입">
+</form>
+</body>
+</html>
