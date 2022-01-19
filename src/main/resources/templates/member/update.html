@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2> update </h2>
+
+<form action="/member/update" method="post" name="upPwCh">
+    <input th:type="hidden" th:name="memberId" id="memberId" th:value="${member.memberId}">
+    이메일:<input th:type="text"  th:name="memberEmail" id="memberEmail" th:value="${member.memberEmail}" readonly>
+    비밀번호:<input th:type="text" th:name="memberPassword"  th:value="${member.memberPassword}" id="pwCh">
+    이름:<input th:type="text" th:name="memberName" id="memberName" th:value="${member.memberName}">
+    <input th:type="button" th:onclick="updatePwCh()" value="수정(post)">
+    <input type="button" th:onclick="ajaxUp()" value="수정(put)">
+</form>
+</body>
+</html>

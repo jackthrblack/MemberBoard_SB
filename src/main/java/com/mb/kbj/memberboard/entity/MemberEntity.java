@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.lang.reflect.Member;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,6 +34,9 @@ public class MemberEntity extends BaseEntity {
 
     @Column
     private String memberFileName;
+
+    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<BoardEntity> boardEntityList = new ArrayList<>();
 
     public static MemberEntity toSaveMember(MemberSaveDTO memberSaveDTO) {
 

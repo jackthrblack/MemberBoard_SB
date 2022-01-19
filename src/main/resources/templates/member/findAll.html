@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+    <script>
+        const deleteById = (memberId) => {
+            const reqUrl="/member/"+memberId;
+            const img = document.getElementById("memberImg");
+
+            $.ajax({
+                type:'delete',
+                url:reqUrl,
+                success: function (result){
+                    location.href="/member/";
+                },
+                error: function (){
+                    console.log("아작이 또 실패패")
+               }
+            });
+        }
+
+    </script>
+</head>
+<body>
+<h2>findAll</h2>
+<table>
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>이메일</th>
+        <th>비밀번호</th>
+        <th>이름</th>
+        <th>사진</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr th:each="member: ${memberList}">
+            <td th:text="${member.memberId}" id="memberId" readonly></td>
+            <td th:text="${member.memberEmail}" readonly></td>
+            <td th:type="hidden" th:text="${member.memberPassword}" readonly></td>
+            <td th:text="${member.memberName}" readonly></td>
+            <td><img th:src="@{/img/}+${member.memberFileName}" alt="프로필사진"></td>
+            <td><button th:onclick="deleteById([[${member.memberId}]])" >회원삭제</button></td>
+        </tr>
+    </tbody>
+</body>
+</html>
