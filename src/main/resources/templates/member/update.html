@@ -1,19 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+    <script>
+        const ajaxUp = () => {
+
+            const pw=document.getElementById("memberPassword").value;
+            const pwDB="[[${member.memberPassword}]]";
+
+            if(pw==pwDB){
+                const id = document.getElementById("memberId").value;
+                // const name = document.getElementById("memberName").value;
+                // const phone = document.getElementById("memberPhone").value;
+                // const file = document.getElementById("memberFile");
+
+                const reqUrl = "/member/"+id;
+
+                // const updateData = JSON.stringify({
+                //     memberId: id,
+                //     memberPassword: pw,
+                //     memberName: name,
+                //     memberPhone: phone,
+                //     memberFile: file,
+                //
+                // });
+
+                 var form = $('#memberUp')[0];
+                 var data = new FormData(form);
+
+                 // console.log(updateData);
+
+                $.ajax({
+                    type: 'PUT',
+                    enctype: 'multipart/form-data',
+                    url:reqUrl,
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    timeout: 600000,
+                    success: function(){
+                        location.href="/member/"+id;
+                    },
+                    error: function (){
+                        alert("아작이 또 또 실패")
+                    }
+                });
+
+            }else{
+                alert("비밀번호를 확인해주세요.")
+            }
+
+
+        }
+
+    </script>
 </head>
 <body>
 <h2> update </h2>
 
-<form action="/member/update" method="post" name="upPwCh">
+<form action="/member/update" id="memberUp" name="upPwCh" enctype="multipart/form-data">
     <input th:type="hidden" th:name="memberId" id="memberId" th:value="${member.memberId}">
     이메일:<input th:type="text"  th:name="memberEmail" id="memberEmail" th:value="${member.memberEmail}" readonly>
-    비밀번호:<input th:type="text" th:name="memberPassword"  th:value="${member.memberPassword}" id="pwCh">
+    비밀번호:<input th:type="text" th:name="memberPassword"  th:value="${member.memberPassword}" id="memberPassword">
     이름:<input th:type="text" th:name="memberName" id="memberName" th:value="${member.memberName}">
-    <input th:type="button" th:onclick="updatePwCh()" value="수정(post)">
-    <input type="button" th:onclick="ajaxUp()" value="수정(put)">
+    핸드폰:<input th:type="text" th:name="memberPhone" id="memberPhone" th:value="${member.memberPhone}">
+    <input th:type="file" th:name="memberFile" id="memberFile">
+    <input type="button" th:onclick="ajaxUp()" value="수정">
 </form>
 </body>
 </html>

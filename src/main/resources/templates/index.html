@@ -9,8 +9,10 @@
 <a href="/member/save" >회원가입</a>
 <a href="/member/login" >로그인</a>
 <a href="/member/logout" >로그아웃</a>
-<a th:href="@{|/member/${'loginEmail'}|}">mypage</a>
+<a th:href="@{|/member/${session.loginId}|}">mypage</a>
 <a href="/board/save" >글등록</a>
+세션값 이메일  :  <p th:text="${session['loginEmail']}"></p>
+세션값 아이디 :  <p th:text="${session['loginId']}"></p>
 
 <span th:if="${#strings.equals(session['loginEmail'],'admin')}">
 <a th href="/member/">전체회원목록</a>

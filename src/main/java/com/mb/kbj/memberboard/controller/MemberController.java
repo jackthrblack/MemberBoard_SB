@@ -3,6 +3,7 @@ package com.mb.kbj.memberboard.controller;
 import com.mb.kbj.memberboard.dto.MemberDetailDTO;
 import com.mb.kbj.memberboard.dto.MemberLoginDTO;
 import com.mb.kbj.memberboard.dto.MemberSaveDTO;
+import com.mb.kbj.memberboard.dto.MemberUpdateDTO;
 import com.mb.kbj.memberboard.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.lang.reflect.Member;
 import java.util.List;
 
 import static com.mb.kbj.memberboard.common.SessionConst.LOGIN_EMAIL;
@@ -55,20 +57,11 @@ public class MemberController {
 
        boolean loginResult = ms.login(memberLoginDTO);
 
-      /* if(ms.findByEmail(memberLoginDTO)){
-           session.setAttribute("loginEmail",memberLoginDTO.getMemberEmail());
-           Long loginId = ms.findByMemberId(memberLoginDTO.getMemberEmail());
-           session.setAttribute("loginId",loginId);
-           System.out.println(loginId);
-           return "index";
-       }else{
-           return "/member/login";
-       }*/
-
        if(loginResult){
            session.setAttribute(LOGIN_EMAIL,memberLoginDTO.getMemberEmail());
            Long loginId = ms.findByMemberId(memberLoginDTO.getMemberEmail());
            session.setAttribute("loginId",loginId);
+           System.out.println(loginId);
            return "index";
        }else{
            return "/member/login";
@@ -110,29 +103,25 @@ public class MemberController {
        return new ResponseEntity(HttpStatus.OK);
    }
 
-   @GetMapping("/${loginEmail}")
+  @GetMapping("/{memberId}")
     public String findById(@PathVariable("memberId") Long memberId, Model model){
-       MemberDetailDTO member = ms.findByEMail(memberId);
+       MemberDetailDTO member = ms.findById(memberId);
        model.addAttribute("member",member);
        return "/member/mypage";
    }
 
-  /*  @PostMapping("/login")
-    public String login(@Validated @ModelAttribute("member") MemberLoginDTO memberLoginDTO,
-                        BindingResult bindingResult,HttpSession session){
-        if (bindingResult.hasErrors()){
-            return "/member/login";
-        }
+   @GetMapping("/update")
+   public String update_form(Model model, HttpSession session){
+       String memberEmail = (String) session.getAttribute(LOGIN_EMAIL);
+       MemberDetailDTO member = ms.findByEmail(memberEmail);
+       model.addAttribute("member",member);
+       return "/member/update";
+   }
 
-        if(ms.findByEmail(memberLoginDTO)){
-            session.setAttribute("loginEmail",memberLoginDTO.getMemberEmail());
-            Long loginId = ms.findByMemberId(memberLoginDTO.getMemberEmail());
-            session.setAttribute("loginId",loginId);
-            System.out.println(loginId);
-            return "index";
-        }else{
-            return "/member/login";
-        }
-
-    }*/
+   @PutMapping("/{memberId}")
+    public ResponseEntity update(@ModelAttribute MemberUpdateDTO memberUpdateDTO) throws IllegalStateException, IOException{
+       System.out.println(memberUpdateDTO);
+       Long memberId = ms.update(memberUpdateDTO);
+       return new ResponseEntity(HttpStatus.OK);
+   }
 }

@@ -1,6 +1,7 @@
 package com.mb.kbj.memberboard.entity;
 
 import com.mb.kbj.memberboard.dto.MemberSaveDTO;
+import com.mb.kbj.memberboard.dto.MemberUpdateDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,7 +36,7 @@ public class MemberEntity extends BaseEntity {
     @Column
     private String memberFileName;
 
-    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "memberEntity", cascade =CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BoardEntity> boardEntityList = new ArrayList<>();
 
     public static MemberEntity toSaveMember(MemberSaveDTO memberSaveDTO) {
@@ -46,6 +47,19 @@ public class MemberEntity extends BaseEntity {
         memberEntity.setMemberName(memberSaveDTO.getMemberName());
         memberEntity.setMemberPhone(memberSaveDTO.getMemberPhone());
         memberEntity.setMemberFileName(memberSaveDTO.getMemberFileName());
+        return memberEntity;
+    }
+
+    public static MemberEntity toUpdateMember(MemberUpdateDTO memberUpdateDTO) {
+
+        MemberEntity memberEntity = new MemberEntity();
+
+        memberEntity.setId(memberUpdateDTO.getMemberId());
+        memberEntity.setMemberEmail(memberUpdateDTO.getMemberEmail());
+        memberEntity.setMemberPassword(memberUpdateDTO.getMemberPassword());
+        memberEntity.setMemberName(memberUpdateDTO.getMemberName());
+        memberEntity.setMemberPhone(memberUpdateDTO.getMemberPhone());
+        memberEntity.setMemberFileName(memberUpdateDTO.getMemberFileName());
         return memberEntity;
     }
 }

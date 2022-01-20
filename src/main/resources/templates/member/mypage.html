@@ -26,7 +26,6 @@
         <td th:text="${member.memberPassword}">비밀번호</td>
         <td th:text="${member.memberName}">이름</td>
         <td th:text="${member.memberPhone}">핸드폰</td>
-        <td th:text="${member.memberName}">프로필사진</td>
         <td> <img th:src="@{/img/}+${member.memberFileName}" alt="프로필사진"></td>
         <td th:text="${member.createTime}">가입일자</td>
         <td th:text="${member.updateTime}">수정일자</td>

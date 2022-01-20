@@ -37,7 +37,7 @@ public class BoardServiceImpl implements BoardService {
         // 여기까지의 내용은 파일을 저장하는 과정
         boardSaveDTO.setBoardFileName(boardFileName);
 
-        MemberEntity memberEntity = mr.findById(boardSaveDTO.getMemberId()).get();
+        MemberEntity memberEntity = mr.findByMemberEmail(boardSaveDTO.getBoardWriter());
         BoardEntity boardEntity = BoardEntity.toSaveBoard(boardSaveDTO, memberEntity);
         return br.save(boardEntity).getId();
     }
