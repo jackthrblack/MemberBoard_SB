@@ -1,11 +1,17 @@
 package com.mb.kbj.memberboard.service;
 
+import com.mb.kbj.memberboard.common.PagingConst;
+import com.mb.kbj.memberboard.dto.BoardDetailDTO;
 import com.mb.kbj.memberboard.dto.BoardSaveDTO;
 import com.mb.kbj.memberboard.entity.BoardEntity;
 import com.mb.kbj.memberboard.entity.MemberEntity;
 import com.mb.kbj.memberboard.repository.BoardRepository;
 import com.mb.kbj.memberboard.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,5 +46,48 @@ public class BoardServiceImpl implements BoardService {
         MemberEntity memberEntity = mr.findByMemberEmail(boardSaveDTO.getBoardWriter());
         BoardEntity boardEntity = BoardEntity.toSaveBoard(boardSaveDTO, memberEntity);
         return br.save(boardEntity).getId();
+    }
+
+    /*@Override
+    public Page<BoardDetailDTO> paging(Pageable pageable) {
+        System.out.println("pageable = " + pageable);
+        Page<BoardEntity> boardEntityPage = br.findAll(pageable);
+        System.out.println("boardEntityPage.getContent() = " + boardEntityPage.getContent());
+        Page<BoardDetailDTO> boardList = boardEntityPage.map(
+                board -> new BoardDetailDTO(board.getId(),
+                        board.getBoardTitle(),
+                        board.getBoardWriter(),
+                        board.getBoardContents(),
+                        board.getBoardFileName(),
+                        board.getCreateTime())
+        );
+        System.out.println("sboList:"+boardList);
+        return boardList;
+    }*/
+
+    @Override
+    public Page<BoardDetailDTO> paging(Pageable pageable) {
+        int page = pageable.getPageNumber();
+        // 요청한 페이지가 1이면 페이지값을 0으로 하고 1이 아니면 요청 페이지에서 1을 뺀다.
+
+        // page = page-1;
+        page=(page==1)? 0:(page-1);
+        // PageRequest=> 페이지요청 / page => 몇번째? / PagingConst.PAGE_LIMIT => 몇개씩?
+        // Sort.by(Sort.Direction.DESC,"id") => 어떤식으로 볼거고 어떤걸 기준으로("id"는 Entity필드 이름으로 와야한다.)
+        Page<BoardEntity> boardEntities =
+                br.findAll(PageRequest.of(page, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));
+
+        // Page<BoardEntity> => Page<BoardPagingDTO>
+        // 기존 방식대로하면 안된다. -> 페이지 객체가 제공하는 메서드드를 못 쓴다! 이렇게 단순하게 옮기면
+        //map(): 엔티티가 담긴 페이지 객체를 dto가 담긴 페이지객체로 변환해주는 역할
+        Page<BoardDetailDTO> boardList = boardEntities.map(
+                board -> new BoardDetailDTO(board.getId(),
+                        board.getBoardTitle(),
+                        board.getBoardWriter(),
+                        board.getBoardContents(),
+                        board.getBoardFileName(),
+                        board.getCreateTime())
+        );
+        return boardList;
     }
 }

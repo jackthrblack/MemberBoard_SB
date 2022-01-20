@@ -11,6 +11,7 @@
 <a href="/member/logout" >로그아웃</a>
 <a th:href="@{|/member/${session.loginId}|}">mypage</a>
 <a href="/board/save" >글등록</a>
+<a href="/board/" >글목록</a><br>
 세션값 이메일  :  <p th:text="${session['loginEmail']}"></p>
 세션값 아이디 :  <p th:text="${session['loginId']}"></p>
 
