@@ -30,7 +30,7 @@
 
                  var form = $('#memberUp')[0];
                  var data = new FormData(form);
-
+                console.log(data);
                  // console.log(updateData);
 
                 $.ajax({
@@ -62,13 +62,13 @@
 <body>
 <h2> update </h2>
 
-<form action="/member/update" id="memberUp" name="upPwCh" enctype="multipart/form-data">
+<form action="/member/update" id="memberUp" enctype="multipart/form-data">
     <input th:type="hidden" th:name="memberId" id="memberId" th:value="${member.memberId}">
-    이메일:<input th:type="text"  th:name="memberEmail" id="memberEmail" th:value="${member.memberEmail}" readonly>
-    비밀번호:<input th:type="text" th:name="memberPassword"  th:value="${member.memberPassword}" id="memberPassword">
-    이름:<input th:type="text" th:name="memberName" id="memberName" th:value="${member.memberName}">
-    핸드폰:<input th:type="text" th:name="memberPhone" id="memberPhone" th:value="${member.memberPhone}">
-    <input th:type="file" th:name="memberFile" id="memberFile">
+    이메일:<input th:type="text"  th:name="memberEmail" th:value="${member.memberEmail}" readonly>
+    비밀번호:<input th:type="text" th:name="memberPassword" th:value="${member.memberPassword}">
+    이름:<input th:type="text" th:name="memberName"  th:value="${member.memberName}">
+    핸드폰:<input th:type="text" th:name="memberPhone"  th:value="${member.memberPhone}">
+    <input th:type="file" th:name="memberFile">
     <input type="button" th:onclick="ajaxUp()" value="수정">
 </form>
 </body>

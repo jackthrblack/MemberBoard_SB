@@ -2,10 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script>
+    const deleteById = (boardId) => {
+        const reqUrl = "/board/"+boardId;
+
+        $.ajax({
+           type: 'delete',
+           url:reqUrl,
+           success: function (){
+               location.href="/board";
+           },
+           error: function (){
+
+           }
+        });
+    }
+
+</script>
+
 <body class="container">
 
 <h2>회원제 게시판</h2>
-
+<a href="/">홈</a>
 <table class="table table-hover">
     <thead>
     <tr>
@@ -17,10 +36,11 @@
     </thead>
     <tbody>
     <tr th:each="board: ${boardList}">
-        <td th:text="${board.boardId}"></td>
+        <td th:text="${board.boardId}" id="boardId"></td>
         <td><a th:href="@{|/board/${board.boardId}|}" th:text="${board.boardTitle}">제목</a></td>
         <td th:text="${board.boardWriter}"></td>
         <td th:text="${board.boardDate}"></td>
+        <td><button th:if="(${#strings.equals(session['loginEmail'],'admin')}) or (${session.loginEmail}==${board.boardWriter})" th:onclick="deleteById([[${board.boardId}]])">삭제</button></td>
     </tr>
     </tbody>
 </table>

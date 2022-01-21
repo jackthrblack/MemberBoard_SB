@@ -39,6 +39,9 @@ public class MemberEntity extends BaseEntity {
     @OneToMany(mappedBy = "memberEntity", cascade =CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BoardEntity> boardEntityList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "memberEntity", cascade =CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<CommentEntity> commentEntityList = new ArrayList<>();
+
     public static MemberEntity toSaveMember(MemberSaveDTO memberSaveDTO) {
 
         MemberEntity memberEntity = new MemberEntity();

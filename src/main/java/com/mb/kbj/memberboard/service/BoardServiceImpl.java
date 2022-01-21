@@ -3,6 +3,7 @@ package com.mb.kbj.memberboard.service;
 import com.mb.kbj.memberboard.common.PagingConst;
 import com.mb.kbj.memberboard.dto.BoardDetailDTO;
 import com.mb.kbj.memberboard.dto.BoardSaveDTO;
+import com.mb.kbj.memberboard.dto.BoardUpdateDTO;
 import com.mb.kbj.memberboard.entity.BoardEntity;
 import com.mb.kbj.memberboard.entity.MemberEntity;
 import com.mb.kbj.memberboard.repository.BoardRepository;
@@ -82,6 +83,7 @@ public class BoardServiceImpl implements BoardService {
         //map(): 엔티티가 담긴 페이지 객체를 dto가 담긴 페이지객체로 변환해주는 역할
         Page<BoardDetailDTO> boardList = boardEntities.map(
                 board -> new BoardDetailDTO(board.getId(),
+                        board.getMemberEntity().getId(),
                         board.getBoardTitle(),
                         board.getBoardWriter(),
                         board.getBoardContents(),
@@ -90,4 +92,41 @@ public class BoardServiceImpl implements BoardService {
         );
         return boardList;
     }
+
+    @Override
+    public void deleteById(Long boardId) {
+        br.deleteById(boardId);
+    }
+
+    @Override
+    public BoardDetailDTO findById(Long boardId) {
+        BoardEntity boardEntity = br.findById(boardId).get();
+        BoardDetailDTO boardDetailDTO = BoardDetailDTO.toBoardDetail(boardEntity);
+        return boardDetailDTO;
+    }
+
+    @Override
+    public Long update(BoardUpdateDTO boardUpdateDTO) throws IllegalStateException, IOException {
+        // dto에 담긴 파일을 가져옴
+        MultipartFile boardFile = boardUpdateDTO.getBoardFile();
+        // 파일 이름을 가져옴(파일이름을 DB에 저장하기 위해) / 파일의 이름을 가져옴
+        String boardFileName = boardFile.getOriginalFilename();
+        // 파일명 중복을 피하기 위해 파일이름앞에 현재 시간값을 붙임.
+        boardFileName = System.currentTimeMillis() + "-" + boardFileName;
+        // 파일 저장 경로 세팅
+        String savePath = "C:\\devleopment\\source\\springboot\\MemberBoardProject\\src\\main\\resources\\static\\boardImg\\" + boardFileName;
+        // bfile이 비어있지 않다면(즉 파일이 있으면) savePath에 저장을 하겠다.
+        if (!boardFile.isEmpty()) {
+            boardFile.transferTo(new File(savePath));
+        }
+        // 여기까지의 내용은 파일을 저장하는 과정
+        boardUpdateDTO.setBoardFileName(boardFileName);
+
+        MemberEntity memberEntity = mr.findByMemberEmail(boardUpdateDTO.getBoardWriter());
+        BoardEntity boardEntity = BoardEntity.toUpdateBoard(boardUpdateDTO,memberEntity);
+
+        return br.save(boardEntity).getId();
+    }
+
+
 }

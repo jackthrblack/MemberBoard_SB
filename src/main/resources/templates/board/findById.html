@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+</head>
+<body>
+<h2>상세글</h2>
+
+<table>
+    <thead>
+    <tr>
+        <td>번호</td>
+        <td>제목</td>
+        <td>작성자</td>
+        <td>내용</td>
+        <td>프로필 사진</td>
+        <td>작성일자</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td th:text="${board.boardId}"></td>
+        <td th:text="${board.boardTitle}"></td>
+        <td th:text="${board.boardWriter}"></td>
+        <td th:text="${board.boardContents}"></td>
+        <td><img th:src="@{/boardImg/}+${board.boardFileName}" alt="프로필사진"></td>
+        <td th:text="${board.boardDate}"></td>
+        <td><a th:if="${session.loginEmail}==${board.boardWriter}" th:href="@{|/board/update/${board.boardId}|}">수정</a></td>
+    </tr>
+    </tbody>
+</table>
+
+<div id="comment-write">
+    <input type="text" name="commentWriter" id="commentWriter" th:value="${session.loginEmail}" readonly><br>
+    <input type="text" name="commentWriter" id="commentContents" placeholder="내용"><br>
+    <button id="comment-write-btn">댓글등록</button>
+</div>
+
+<div id="comment-area">
+    <table>
+        <thead>
+            <tr>
+                <th>댓글번호</th>
+                <th>작성자</th>
+                <th>내용</th>
+                <th>작성시간</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="comment:${commentList}">
+                <td th:text="${comment.commentId}"></td>
+                <td th:text="${comment.commentWriter}"></td>
+                <td th:text="${comment.commentId}"></td>
+                <td th:text="${comment.createTime}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+
+<script>
+    $("#comment-write-btn").click(function (){
+        console.log('댓글등록 버튼 클릭');
+        const commentWriter = $("#commentWriter").val();
+        const commentContents = $("#commentContents").val();
+        const boardId = '[[${board.boardId}]]';
+        $.ajax({
+            type: 'post',
+            url: '/comment/save',
+            data:{
+                'commentWriter': commentWriter,
+                'commentContents': commentContents,
+                'boardId': boardId
+            },
+            dataType: 'json',
+            success: function (result){
+                console.log(result);
+            },
+            error: function (){
+                alert('ajax 실패');
+            }
+        });
+    });
+</script>
+</html>

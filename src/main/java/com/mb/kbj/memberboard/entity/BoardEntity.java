@@ -1,10 +1,13 @@
 package com.mb.kbj.memberboard.entity;
 
 import com.mb.kbj.memberboard.dto.BoardSaveDTO;
+import com.mb.kbj.memberboard.dto.BoardUpdateDTO;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,6 +36,9 @@ public class BoardEntity extends BaseEntity {
     @JoinColumn(name = "member_id")
     private MemberEntity memberEntity;
 
+    @OneToMany(mappedBy = "boardEntity", cascade =CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) // 게시글 하나에 댓글이 여러개가 붙음.
+    private List<CommentEntity> commentEntityList = new ArrayList<>();
+
 
     public static BoardEntity toSaveBoard(BoardSaveDTO boardSaveDTO, MemberEntity memberEntity) {
         BoardEntity boardEntity = new BoardEntity();
@@ -44,5 +50,18 @@ public class BoardEntity extends BaseEntity {
         boardEntity.setMemberEntity(memberEntity);
         return boardEntity;
 
+    }
+
+    public static BoardEntity toUpdateBoard(BoardUpdateDTO boardUpdateDTO, MemberEntity memberEntity) {
+
+        BoardEntity boardEntity = new BoardEntity();
+
+        boardEntity.setId(boardUpdateDTO.getBoardId());
+        boardEntity.setBoardTitle(boardUpdateDTO.getBoardTitle());
+        boardEntity.setBoardWriter(boardUpdateDTO.getBoardWriter());
+        boardEntity.setBoardContents(boardUpdateDTO.getBoardContents());
+        boardEntity.setBoardFileName(boardUpdateDTO.getBoardFileName());
+        boardEntity.setMemberEntity(memberEntity);
+        return boardEntity;
     }
 }
