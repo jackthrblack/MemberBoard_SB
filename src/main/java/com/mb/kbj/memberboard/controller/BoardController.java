@@ -43,19 +43,6 @@ public class BoardController {
         return "index";
     }
 
-/*    @GetMapping
-    public String paging(@PageableDefault(page = 1, size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable, Model model){
-
-        Page<BoardDetailDTO> boardList = bs.paging(pageable);
-        model.addAttribute("boardList",boardList);
-        System.out.println("c:"+boardList);
-        int startPage = (((int)(Math.ceil((double) pageable.getPageNumber() / PagingConst.BLOCK_LIMIT)))-1)*PagingConst.BLOCK_LIMIT+1;
-        int endPage = ((startPage + PagingConst.BLOCK_LIMIT-1) < boardList.getTotalPages()) ? startPage + PagingConst.BLOCK_LIMIT-1:boardList.getTotalPages();
-        model.addAttribute("startPage",startPage);
-        model.addAttribute("endPage",endPage);
-        return "/board/findAll";
-    }*/
-
     @GetMapping
     public String paging(@PageableDefault(page=1)Pageable pageable, Model model){
         // @PageableDefault(page=1)Pageable => 페이지 요청값이 없을때는 기본적으로 1페이지를 띄우겠다. 디폴트값 설정
@@ -96,5 +83,25 @@ public class BoardController {
     public ResponseEntity boardUpdate(@ModelAttribute BoardUpdateDTO boardUpdateDTO)throws IllegalStateException, IOException{
         Long boardId = bs.update(boardUpdateDTO);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public String search(@RequestParam("searchType") String searchType, @RequestParam("keyword") String keyword,
+                            Model model){
+        System.out.println("searchType1 = " + searchType);
+        System.out.println("keyword1 = " + keyword);
+
+        List<BoardDetailDTO> boardList = bs.search(searchType,keyword);
+        System.out.println("boardList = " + boardList);
+
+        System.out.println("searchType2 = " + searchType);
+        System.out.println("keyword2 = " + keyword);
+
+        model.addAttribute("boardList",boardList);
+        System.out.println("boardList2 = " + boardList);
+
+        return "/board/search";
+        /*model.addAttribute("searchType",searchType);
+        model.addAttribute("keyword",keyword);*/
     }
 }

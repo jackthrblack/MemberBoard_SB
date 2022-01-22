@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class BoardUpdateDTO {
 
     private Long boardId;
-    private Long memberdId;
+    private Long memberId;
     private String boardTitle;
     private String boardWriter;
     private String boardContents;
