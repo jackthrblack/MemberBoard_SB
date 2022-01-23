@@ -131,7 +131,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Page<BoardDetailDTO> searchPage(String searchType, String keyword, Pageable pageable) {
+    public Page<BoardDetailDTO> findAll(String searchType, String keyword, Pageable pageable) {
         Page<BoardEntity> boardEntities = null;
                 /*br.findAll(PageRequest.of(page, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));*/
 

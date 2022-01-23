@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
+import static com.mb.kbj.memberboard.common.PagingConst.BLOCK_LIMIT;
+
 @Controller
 @RequestMapping("/board")
 @RequiredArgsConstructor
@@ -50,8 +52,8 @@ public class BoardController {
         //Page라는 객체가 있다.
         Page<BoardDetailDTO> boardList = bs.paging(pageable);
         model.addAttribute("boardList",boardList);
-        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / PagingConst.BLOCK_LIMIT))) - 1) * PagingConst.BLOCK_LIMIT + 1;
-        int endPage = ((startPage + PagingConst.BLOCK_LIMIT - 1) < boardList.getTotalPages()) ? startPage + PagingConst.BLOCK_LIMIT - 1 : boardList.getTotalPages();
+        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / BLOCK_LIMIT))) - 1) * BLOCK_LIMIT + 1;
+        int endPage = ((startPage + BLOCK_LIMIT - 1) < boardList.getTotalPages()) ? startPage + BLOCK_LIMIT - 1 : boardList.getTotalPages();
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage",endPage);
         return  "board/findAll";
@@ -111,11 +113,11 @@ public class BoardController {
         System.out.println("searchType1 = " + searchType);
         System.out.println("keyword1 = " + keyword);
 
-        Page<BoardDetailDTO> boardList = bs.searchPage(searchType,keyword,pageable);
+        Page<BoardDetailDTO> boardList = bs.findAll(searchType,keyword,pageable);
         System.out.println("boardList = " + boardList);
 
-        int startPage = (((int) (Math.ceil((double) (pageable.getPageNumber()+1) / PagingConst.BLOCK_LIMIT))) - 1) * PagingConst.BLOCK_LIMIT + 1;
-        int endPage = ((startPage + PagingConst.BLOCK_LIMIT - 1) < (boardList.getTotalPages()+1)) ? startPage + PagingConst.BLOCK_LIMIT - 1 : boardList.getTotalPages();
+        int startPage = (((int) (Math.ceil((double) (pageable.getPageNumber()+1) /BLOCK_LIMIT))) - 1) * BLOCK_LIMIT + 1;
+        int endPage = ((startPage + BLOCK_LIMIT - 1) < (boardList.getTotalPages()+1)) ? startPage + BLOCK_LIMIT - 1 : boardList.getTotalPages();
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage",endPage);
         model.addAttribute("boardList",boardList);
@@ -123,9 +125,6 @@ public class BoardController {
         model.addAttribute("keyword",keyword);
 
         System.out.println("boardList2 = " + boardList);
-
-
-
         return "/board/search";
     }
 }

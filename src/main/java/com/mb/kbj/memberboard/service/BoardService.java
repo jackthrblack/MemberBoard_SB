@@ -23,5 +23,5 @@ public interface BoardService {
 
 /*    List<BoardDetailDTO> search(String searchType, String keyword);*/
 
-    Page<BoardDetailDTO> searchPage(String searchType, String keyword, Pageable pageable);
+    Page<BoardDetailDTO> findAll(String searchType, String keyword, Pageable pageable);
 }
