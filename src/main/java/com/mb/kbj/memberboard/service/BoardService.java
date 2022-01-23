@@ -21,5 +21,7 @@ public interface BoardService {
     Long update(BoardUpdateDTO boardUpdateDTO) throws IllegalStateException, IOException;
 
 
-    List<BoardDetailDTO> search(String searchType, String keyword);
+/*    List<BoardDetailDTO> search(String searchType, String keyword);*/
+
+    Page<BoardDetailDTO> searchPage(String searchType, String keyword, Pageable pageable);
 }

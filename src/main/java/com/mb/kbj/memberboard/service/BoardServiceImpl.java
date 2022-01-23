@@ -131,6 +131,35 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    public Page<BoardDetailDTO> searchPage(String searchType, String keyword, Pageable pageable) {
+        Page<BoardEntity> boardEntities = null;
+                /*br.findAll(PageRequest.of(page, PagingConst.PAGE_LIMIT, Sort.by(Sort.Direction.DESC, "id")));*/
+
+        if(searchType.equals("boardTitle")){
+            System.out.println("title");
+            boardEntities = br.findByBoardTitleContaining(keyword,pageable);
+        }else if(searchType.equals("boardWriter")){
+            System.out.println("writer");
+            boardEntities=br.findByBoardWriterContaining(keyword,pageable);
+        }else{
+            System.out.println("contents");
+            boardEntities=br.findByBoardContentsContaining(keyword,pageable);
+            System.out.println("asdfsadf="+boardEntities);
+        }
+
+        Page<BoardDetailDTO> boardList = boardEntities.map(
+                board -> new BoardDetailDTO(board.getId(),
+                        board.getMemberEntity().getId(),
+                        board.getBoardTitle(),
+                        board.getBoardWriter(),
+                        board.getBoardContents(),
+                        board.getBoardFileName(),
+                        board.getCreateTime())
+        );
+        return boardList;
+    }
+
+   /* @Override
     public List<BoardDetailDTO> search(String searchType, String keyword) {
 
         List<BoardEntity> boardEntity = null;
@@ -152,7 +181,7 @@ public class BoardServiceImpl implements BoardService {
             boardDetailDTOList.add(BoardDetailDTO.toBoardDetail(b));
         }
         return boardDetailDTOList;
-    }
+    }*/
 
 
 }

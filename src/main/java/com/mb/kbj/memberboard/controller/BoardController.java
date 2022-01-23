@@ -85,7 +85,7 @@ public class BoardController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/search")
+    /*@GetMapping("/search")
     public String search(@RequestParam("searchType") String searchType, @RequestParam("keyword") String keyword,
                             Model model){
         System.out.println("searchType1 = " + searchType);
@@ -101,7 +101,31 @@ public class BoardController {
         System.out.println("boardList2 = " + boardList);
 
         return "/board/search";
-        /*model.addAttribute("searchType",searchType);
-        model.addAttribute("keyword",keyword);*/
+        *//*model.addAttribute("searchType",searchType);
+        model.addAttribute("keyword",keyword);*//*
+    }*/
+
+    @GetMapping("/search")
+    public String search(@RequestParam("searchType") String searchType, @RequestParam("keyword") String keyword,
+                         Model model, @PageableDefault(page=0, size = 5, sort ="id", direction = Sort.Direction.DESC)Pageable pageable){
+        System.out.println("searchType1 = " + searchType);
+        System.out.println("keyword1 = " + keyword);
+
+        Page<BoardDetailDTO> boardList = bs.searchPage(searchType,keyword,pageable);
+        System.out.println("boardList = " + boardList);
+
+        int startPage = (((int) (Math.ceil((double) (pageable.getPageNumber()+1) / PagingConst.BLOCK_LIMIT))) - 1) * PagingConst.BLOCK_LIMIT + 1;
+        int endPage = ((startPage + PagingConst.BLOCK_LIMIT - 1) < (boardList.getTotalPages()+1)) ? startPage + PagingConst.BLOCK_LIMIT - 1 : boardList.getTotalPages();
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage",endPage);
+        model.addAttribute("boardList",boardList);
+        model.addAttribute("searchType",searchType);
+        model.addAttribute("keyword",keyword);
+
+        System.out.println("boardList2 = " + boardList);
+
+
+
+        return "/board/search";
     }
 }
