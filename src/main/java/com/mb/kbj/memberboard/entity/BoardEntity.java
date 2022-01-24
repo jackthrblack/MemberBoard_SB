@@ -32,11 +32,14 @@ public class BoardEntity extends BaseEntity {
     @Column
     private String boardFileName;
 
+    @Column
+    private int boardHits;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private MemberEntity memberEntity;
 
-    @OneToMany(mappedBy = "boardEntity", cascade =CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) // 게시글 하나에 댓글이 여러개가 붙음.
+    @OneToMany(mappedBy = "boardEntity", cascade =CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CommentEntity> commentEntityList = new ArrayList<>();
 
 
@@ -48,6 +51,7 @@ public class BoardEntity extends BaseEntity {
         boardEntity.setBoardContents(boardSaveDTO.getBoardContents());
         boardEntity.setBoardFileName(boardSaveDTO.getBoardFileName());
         boardEntity.setMemberEntity(memberEntity);
+        boardEntity.setBoardHits(0);
         return boardEntity;
 
     }
@@ -62,6 +66,7 @@ public class BoardEntity extends BaseEntity {
         boardEntity.setBoardContents(boardUpdateDTO.getBoardContents());
         boardEntity.setBoardFileName(boardUpdateDTO.getBoardFileName());
         boardEntity.setMemberEntity(memberEntity);
+        boardEntity.setBoardHits(boardUpdateDTO.getBoardHits());
         return boardEntity;
     }
 }

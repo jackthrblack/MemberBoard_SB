@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -29,22 +29,32 @@
                 }
             });
         }
-
-
     </script>
+
+    <style>
+        .field-error{
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <h2>save</h2>
 
-<form action="/member/save" method="post" enctype="multipart/form-data">
-    이메일: <input type="text" name="memberEmail" onblur="emailDp()" id="memberEmail" >
+<form action="/member/save" method="post" th:object="${member}" enctype="multipart/form-data">
+
+    이메일: <input type="text" th:field="*{memberEmail}" onblur="emailDp()" id="memberEmail" >
+    <p th:if="${#fields.hasErrors('memberEmail')}" th:errors="*{memberEmail}" th:errorclass="field-error"></p>
     <span id="emailCheck"></span>
-    비밀번호:<input type="text" name="memberPassword" >
+
+    비밀번호:<input type="text" th:field="*{memberPassword}" >
+    <p th:if="${#fields.hasErrors('memberPassword')}" th:errors="*{memberPassword}" th:errorclass="field-error"></p>
+
     이름:<input type="text" name="memberName" >
     전화번호:<input type="text" name="memberPhone" >
     <input type="file" name="memberFile">
     <input type="submit" value="가입">
 </form>
+
 </body>
 
 </html>

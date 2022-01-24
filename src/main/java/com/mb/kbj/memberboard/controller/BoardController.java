@@ -69,6 +69,7 @@ public class BoardController {
     public String findById(@PathVariable("boardId") Long boardId, Model model){
         BoardDetailDTO boardDetailDTO = bs.findById(boardId);
         List<CommentDetailDTO> commentList = cs.findAll(boardId);
+        bs.hits(boardId);
         model.addAttribute("board", boardDetailDTO);
         model.addAttribute("commentList",commentList);
         return "/board/findById";
@@ -124,6 +125,8 @@ public class BoardController {
         model.addAttribute("searchType",searchType);
         model.addAttribute("keyword",keyword);
 
+        System.out.println("searchType2 = " + searchType);
+        System.out.println("keyword2 = " + keyword);
         System.out.println("boardList2 = " + boardList);
         return "/board/search";
     }

@@ -13,4 +13,5 @@ public class BoardUpdateDTO {
     private String boardContents;
     private MultipartFile boardFile;
     private String boardFileName;
+    private int boardHits;
 }

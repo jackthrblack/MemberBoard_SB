@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+    <script>
+        const deleteById = (commentId) => {
+
+            const reqUrl = "/comment/"+commentId;
+            $.ajax({
+                type: 'delete',
+                url:reqUrl,
+                success: function (){
+                    location.reload();
+                },
+                error: function (){
+
+                }
+            });
+        }
+
+    </script>
 </head>
 <body>
 <h2>상세글</h2>
@@ -16,6 +34,7 @@
         <td>작성자</td>
         <td>내용</td>
         <td>프로필 사진</td>
+        <td>조회수</td>
         <td>작성일자</td>
     </tr>
     </thead>
@@ -26,6 +45,7 @@
         <td th:text="${board.boardWriter}"></td>
         <td th:text="${board.boardContents}"></td>
         <td><img th:src="@{/boardImg/}+${board.boardFileName}" alt="프로필사진"></td>
+        <td th:text="${board.boardHits}"> </td>
         <td th:text="${board.boardDate}"></td>
         <td><a th:if="${session.loginEmail}==${board.boardWriter}" th:href="@{|/board/update/${board.boardId}|}">수정</a></td>
     </tr>
@@ -50,10 +70,11 @@
         </thead>
         <tbody>
             <tr th:each="comment:${commentList}">
-                <td th:text="${comment.commentId}"></td>
+                <td th:text="${comment.commentId}" id="commentId"></td>
                 <td th:text="${comment.commentWriter}"></td>
-                <td th:text="${comment.commentId}"></td>
+                <td th:text="${comment.commentContents}"></td>
                 <td th:text="${comment.createTime}"></td>
+                <td><input type="button" th:if="${comment.commentWriter}==${session.loginEmail}" th:onclick="deleteById([[${comment.commentId}]])" value="삭제"></td>
             </tr>
         </tbody>
     </table>
@@ -76,7 +97,23 @@
             },
             dataType: 'json',
             success: function (result){
-                console.log(result);
+                let output = "<table>";
+                output += "<tr><th>댓글번호</th>";
+                output += "<th>작성자</th>";
+                output += "<th>내용</th>";
+                output += "<th>작성시간</th></tr>";
+                for ( let i in result) {
+                    output += "<tr>";
+                    output += "<td>" + result[i].commentId + "</td>";
+                    output += "<td>" + result[i].commentWriter + "</td>";
+                    output += "<td>" + result[i].commentContents + "</td>";
+                    output += "<td>" + result[i].createTime + "</td>";
+                    output += "</tr>";
+                }
+                output += "</table>";
+                document.getElementById('comment-area').innerHTML = output;
+                document.getElementById('commentContents').value = '';
+                location.reload();
             },
             error: function (){
                 alert('ajax 실패');

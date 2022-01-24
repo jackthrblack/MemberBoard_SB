@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -29,12 +30,17 @@ public class MemberController {
     private final MemberService ms;
 
    @GetMapping("/save")
-    public String save_form(){
-       return "member/save";
+    public String save_form(Model model){
+       model.addAttribute("member", new MemberSaveDTO());
+       return "/member/save";
    }
 
    @PostMapping("/save")
-    public String save(@ModelAttribute MemberSaveDTO memberSaveDTO) throws IllegalStateException, IOException {
+    public String save(@Validated @ModelAttribute("member") MemberSaveDTO memberSaveDTO,BindingResult bindingResult) throws IllegalStateException, IOException {
+       if(bindingResult.hasErrors()){
+           return "/member/save";
+       }
+
        Long memberId=ms.save(memberSaveDTO);
        return "index";
    }
@@ -57,7 +63,7 @@ public class MemberController {
 
        boolean loginResult = ms.login(memberLoginDTO);
 
-       if(loginResult){
+      /* if(loginResult){
            session.setAttribute(LOGIN_EMAIL,memberLoginDTO.getMemberEmail());
            Long loginId = ms.findByMemberId(memberLoginDTO.getMemberEmail());
            session.setAttribute("loginId",loginId);
@@ -65,11 +71,12 @@ public class MemberController {
            return "redirect:/board/";
        }else{
            return "/member/login";
-       }
+       }*/
 
-
-       /*if(loginResult){
+       if(loginResult){
            session.setAttribute(LOGIN_EMAIL,memberLoginDTO.getMemberEmail());
+           Long loginId = ms.findByMemberId(memberLoginDTO.getMemberEmail());
+           session.setAttribute("loginId",loginId);
            String redirectURL = (String) session.getAttribute("redirectURL");
            if(redirectURL != null) {
                return "redirect:"+redirectURL;
@@ -80,7 +87,7 @@ public class MemberController {
        }else{
            // 로그인이 안됐을경우
            return "/member/login";
-       }*/
+       }
    }
 
    @GetMapping("/logout")
