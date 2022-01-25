@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -32,13 +34,18 @@ public class BoardController {
     private final CommentService cs;
 
     @GetMapping("/save")
-    public String save_form(){
-
+    public String save_form(Model model){
+    model.addAttribute("board", new BoardSaveDTO());
         return "/board/save";
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute BoardSaveDTO boardSaveDTO) throws IllegalStateException, IOException{
+    public String save(@Validated @ModelAttribute("board") BoardSaveDTO boardSaveDTO, BindingResult bindingResult) throws IllegalStateException, IOException{
+
+        if(bindingResult.hasErrors()){
+            return "/board/save";
+        }
+
         System.out.println("boardSaveDTO = " + boardSaveDTO);
         Long boardId = bs.save(boardSaveDTO);
         System.out.println("boardSaveDTO2 = " + boardSaveDTO);

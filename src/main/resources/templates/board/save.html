@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
+<style>
+    .field-error{
+        color: red;
+    }
+</style>
 <body>
 <h2>글쓰기</h2>
 
-<form action="/board/save" method="post" enctype="multipart/form-data">
-    제목:<input type="text" name="boardTitle">
+<form action="/board/save" method="post"  th:object="${board}" enctype="multipart/form-data">
+    제목:<input type="text" th:field="*{boardTitle}">
+    <p th:if="${#fields.hasErrors('boardTitle')}" th:errors="*{boardTitle}" th:errorclass="field-error"></p>
     작성자:<input type="text" name="boardWriter" th:value="${session.loginEmail}" readonly>
     내용:<input type="tex" name="boardContents">
     <input type="file" name="boardFile">

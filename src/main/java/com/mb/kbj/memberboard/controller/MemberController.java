@@ -7,7 +7,6 @@ import com.mb.kbj.memberboard.dto.MemberUpdateDTO;
 import com.mb.kbj.memberboard.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.lang.reflect.Member;
 import java.util.List;
 
 import static com.mb.kbj.memberboard.common.SessionConst.LOGIN_EMAIL;
@@ -31,7 +29,7 @@ public class MemberController {
 
    @GetMapping("/save")
     public String save_form(Model model){
-       model.addAttribute("member", new MemberSaveDTO());
+       model.addAttribute("member",new MemberSaveDTO());
        return "/member/save";
    }
 
